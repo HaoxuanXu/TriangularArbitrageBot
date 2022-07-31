@@ -1,7 +1,6 @@
-from alpaca.data.models import Orderbook
 
 
-def __bought_sold_quantity(orderbook: Orderbook, committed_cash: float, is_buy: bool) -> float:
+def __bought_sold_quantity(orderbook, committed_cash: float, is_buy: bool) -> float:
     
     cash_available = committed_cash
     transacted_qty = 0
@@ -35,7 +34,7 @@ def __bought_sold_quantity(orderbook: Orderbook, committed_cash: float, is_buy: 
 def predict_trading_return(
     base_coin_symbol, 
     paired_coin_symbol: str, 
-    orderbooks: dict[str, list[Orderbook, ...]], 
+    orderbooks, 
     committed_cash: float) -> float:
     
     base_coin_usd_symbol: str = base_coin_symbol + "/USD" 
@@ -66,15 +65,15 @@ def predict_trading_return(
     return (final_usd_qty - committed_cash) / committed_cash
 
 def get_optimal_pair(
-    orderbooks: dict[str, list[Orderbook, ...]], 
+    orderbooks, 
     coin_dependency: dict[str, dict[str, list[str, ...]]],
     committed_cash: float) -> (float, list):
     
     # initialize profit percent and winning pair as null
-    max_profit_percent = 0
+    max_profit_percent = float("-inf")
     winning_pair = [] # [paired_coin, base_coin]
     
-    for base_coin_symbol, paired_coin_list in coin_dependency["coin"].items():
+    for base_coin_symbol, paired_coin_list in coin_dependency.items():
         
         for paired_coin_symbol in paired_coin_list:
             

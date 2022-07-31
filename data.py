@@ -1,6 +1,8 @@
+
 from alpaca.data.historical import CryptoHistoricalDataClient
 from alpaca.data.requests import CryptoLatestOrderbookRequest
 from util import load_json
+from datetime import datetime
 
 
 class MarketData:

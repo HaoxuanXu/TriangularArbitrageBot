@@ -2,7 +2,7 @@ from util import load_json
 
 class TradingAssets:
     def __init__(self):
-        self.coin_dependency: dict[str, dict[str, list[str, ...]]] = load_json("./assets.json")
+        self.coin_dependency: dict[str, dict[str, list[str, ...]]] = load_json("./assets.json")["coins"]
         self.coin_pairs = []
         self.build_coin_pairs()
         

@@ -6,6 +6,7 @@ from signal import get_optimal_pair
 from logger import LoggerInstance
 import argparse
 from alpaca.trading.models import Order
+import time
 
 
 def commit_triangular_arbitrage(
@@ -58,24 +59,27 @@ if __name__ == "__main__":
     feature_parser = parser.add_mutually_exclusive_group(required=False)
     feature_parser.add_argument("--live", dest="account", action="store_true")
     feature_parser.add_argument("--no-live", dest="account", action="store_false")
-    parser.add_argument("--entrypercent", dest="entry_percent", type=float())
+    parser.add_argument("--entrypercent", dest="entry_percent", type=float)
     parser.set_defaults(account=False)
-    parser.set_defaults(entry_percent=0.01)
+    parser.set_defaults(entry_percent=1)
     args = parser.parse_args()
     
-    is_paper = args.account
+    is_live = args.account
     entry_percent = args.entry_percent
-    config = load_json(path)
+    config = load_json("config/config.json")
     
-    if is_paper:
-        LoggerInstance.logger.info("applying strategy to the paper account")
-    else:
+    
+    if is_live:
         LoggerInstance.logger.info("applying strategy to the live account")
+        accountType = "live"
+    else:
+        LoggerInstance.logger.info("applying strategy to the paper account")
+        accountType = "paper"
         
     LoggerInstance.logger.info(f"The percent of the committed cash is {round(entry_percent*100, 2)}%")
     
-    market_data_source = MarketData(accountType, config)
-    trade_broker = TradeBroker(is_paper, config)
+    market_data_source = MarketData(accountType)
+    trade_broker = TradeBroker(accountType, entry_percent, config)
     tradable_assets = TradingAssets()
     
     
@@ -95,7 +99,7 @@ if __name__ == "__main__":
         if current_optimal_profit_percent >= 0.01:
             
             LoggerInstance.logger.info(f"""There is an arbitrage opportunity for pair {winning_pair[0]} and {winning_pair[1]}  
-                                       with project profit percent of {current_optimal_profit_percent}""")
+                                       with project profit percent of {current_optimal_profit_percent}%""")
             profit = commit_triangular_arbitrage(
                 base_coin_symbol=winning_pair[1],
                 paired_coin_symbol=winning_pair[0],
@@ -103,5 +107,8 @@ if __name__ == "__main__":
                 assets=tradable_assets
             )
             LoggerInstance.logger.info(f"The profit for pair {winning_pair[0]} and {winning_pair[1]} is %{profit}")
+            
+        time.sleep(0.01)
+        
             
         

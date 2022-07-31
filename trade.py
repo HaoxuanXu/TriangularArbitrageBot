@@ -5,16 +5,11 @@ import time
 from logger import LoggerInstance
 
 class TradeBroker:
-    def __init__(self, is_paper: bool, entry_percent: float, config: dict[dict[str, str]]):
-        if is_paper:
-            self.trading_client = TradingClient(
-                api_key=config["paper"]["api_key"],
-                secret_key=config["paper"]["api_secret"]
-            )
-        else:
-            self.trading_client = TradingClient(
-                api_key=config["live"]["api_key"],
-                secret_key=config["live"]["api_secret"]
+    def __init__(self, account_type: str, entry_percent: float, config: dict[dict[str, str]]):
+        self.trading_client = TradingClient(
+                api_key=config[account_type]["api_key"],
+                secret_key=config[account_type]["api_secret"],
+                paper=True
             )
         self.account = self.trading_client.get_account()
         self.available_cash: float = float(self.account.cash)
