@@ -1,0 +1,10 @@
+{
+    "coins": {
+        "BTC": [
+            "AVAX", "BCH", "DOGE", "ETH", "LINK", "LTC", "MATIC", "SOL", "SUSHI", "UNI", "YFI"
+        ],
+        "USDT": [
+            "AAVE", "ALGO", "AVAX", "BCH", "BTC", "DAI", "DOGE", "ETH", "LINK", "LTC", "NEAR", "PAXG", "SOL", "SUSHI", "TRX", "UNI", "YFI"
+        ]
+    }
+}
