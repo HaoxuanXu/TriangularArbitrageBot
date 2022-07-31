@@ -3,6 +3,7 @@ from util import load_json
 from trade import TradeBroker
 from assets import TradingAssets
 from signal import get_optimal_pair
+from logger import LoggerInstance
 import argparse
 from alpaca.trading.models import Order
 
@@ -59,18 +60,27 @@ if __name__ == "__main__":
     feature_parser.add_argument("--no-live", dest="account", action="store_false")
     parser.add_argument("--entrypercent", dest="entry_percent", type=float())
     parser.set_defaults(account=False)
-    parser.set_defaults(entry_percent=0.2)
+    parser.set_defaults(entry_percent=0.01)
     args = parser.parse_args()
     
     is_paper = args.account
     entry_percent = args.entry_percent
     config = load_json(path)
     
+    if is_paper:
+        LoggerInstance.logger.info("applying strategy to the paper account")
+    else:
+        LoggerInstance.logger.info("applying strategy to the live account")
+        
+    LoggerInstance.logger.info(f"The percent of the committed cash is {round(entry_percent*100, 2)}%")
+    
     market_data_source = MarketData(accountType, config)
     trade_broker = TradeBroker(is_paper, config)
     tradable_assets = TradingAssets()
     
+    
     # start an infinite loop
+    LoggerInstance.logger.info("begin loop ...")
     while True:
         # get the most recent dictionary of order books
         latest_orderbooks = market_data_source.get_latest_crypto_orderbooks(tradable_assets.coin_pairs)
@@ -84,10 +94,14 @@ if __name__ == "__main__":
         # We will make the transaction if the profit is percent is equal or larger than 1 percent
         if current_optimal_profit_percent >= 0.01:
             
+            LoggerInstance.logger.info(f"""There is an arbitrage opportunity for pair {winning_pair[0]} and {winning_pair[1]}  
+                                       with project profit percent of {current_optimal_profit_percent}""")
             profit = commit_triangular_arbitrage(
                 base_coin_symbol=winning_pair[1],
                 paired_coin_symbol=winning_pair[0],
                 trading_client=trade_broker,
                 assets=tradable_assets
             )
+            LoggerInstance.logger.info(f"The profit for pair {winning_pair[0]} and {winning_pair[1]} is %{profit}")
+            
         
