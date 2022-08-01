@@ -66,7 +66,7 @@ class TradeBroker:
                 market_order = self.__monitor_order(market_order.id)
                 
         except Exception as e:
-            LoggerInstance.logger.errror(e)
+            LoggerInstance.logger.error(e)
             
         return market_order
     
