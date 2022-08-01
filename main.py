@@ -61,7 +61,7 @@ if __name__ == "__main__":
     feature_parser.add_argument("--no-live", dest="account", action="store_false")
     parser.add_argument("--entrypercent", dest="entry_percent", type=float)
     parser.set_defaults(account=False)
-    parser.set_defaults(entry_percent=1)
+    parser.set_defaults(entry_percent=0.01)
     args = parser.parse_args()
     
     is_live = args.account
