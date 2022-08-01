@@ -94,21 +94,19 @@ if __name__ == "__main__":
             coin_dependency=tradable_assets.coin_dependency,
             committed_cash=trade_broker.committed_cash
         )
-        LoggerInstance.logger.info(f""""winning pair: {winning_pair[0]}:{winning_pair[1]}; profit: {current_optimal_profit_percent*100}%""")
         # We will make the transaction if the profit is percent is equal or larger than 1 percent
-        if current_optimal_profit_percent > 0:
+        if current_optimal_profit_percent >= 0.01:
             
-            LoggerInstance.logger.info(f"""There is an arbitrage opportunity for pair {winning_pair[0]} and {winning_pair[1]}  
-                                       with project profit percent of {current_optimal_profit_percent}%""")
+            LoggerInstance.logger.info(f"""There is an arbitrage opportunity for pair {winning_pair[0]} and {winning_pair[1]} with project profit percent of {current_optimal_profit_percent}%""")
             profit = commit_triangular_arbitrage(
                 base_coin_symbol=winning_pair[1],
                 paired_coin_symbol=winning_pair[0],
                 trading_client=trade_broker,
                 assets=tradable_assets
             )
-            LoggerInstance.logger.info(f"The profit for pair {winning_pair[0]} and {winning_pair[1]} is %{profit}")
+            LoggerInstance.logger.info(f"The profit for pair {winning_pair[0]} and {winning_pair[1]} is %{profit*100/trade_broker.committed_cash}")
             
-        time.sleep(10)
+        time.sleep(0.01)
         
             
         

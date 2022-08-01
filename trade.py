@@ -28,7 +28,7 @@ class TradeBroker:
             OrderStatus.FILLED, OrderStatus.CANCELED, OrderStatus.EXPIRED, OrderStatus.REJECTED,
             OrderStatus.STOPPED, OrderStatus.SUSPENDED, OrderStatus
         ]:
-            order = self.refresh_order(order_id)
+            order = self.__refresh_order(order_id)
             time.sleep(0.1)
             
         return order
